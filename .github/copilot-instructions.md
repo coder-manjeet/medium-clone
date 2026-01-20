@@ -173,3 +173,25 @@ php artisan config:cache && php artisan route:cache
 - claps: id, post_id, user_id, count.
 - publications: id, name, description, owner_id.
 - post_publication: publication_id, post_id.  
+
+### Routes (web.php)
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+Route::post('/posts/{post}/claps', [ClapController::class, 'store'])->name('posts.claps');
+
+### Controllers
+- PostController::create(): return Inertia::render('Posts/Create');
+- PostController::store(Request $request): validate, save, redirect via Inertia.
+- Use middleware for auth.
+
+## Frontend
+### Structure
+- resources/js/Pages/: Home.tsx, Posts/Show.tsx, Posts/Create.tsx
+- resources/js/Components/: Editor.tsx, CommentThread.tsx
+- resources/js/types/: Wayfinder output (routes.ts, models.ts)
+
+### Key Components
+- Create.tsx: import { Routes } from '@/types/routes';
+  const form = useForm({title: '', content: ''});
+  form.post(Routes.posts.store());
+- Show.tsx: props: {post: PostType}; render Quill viewer, clap: Inertia.post(Routes.posts.claps({post: post.id, count}));
