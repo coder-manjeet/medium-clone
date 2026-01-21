@@ -27,6 +27,7 @@ class User extends Authenticatable
         'password',
         'bio',
         'avatar_url',
+        'cover_image_url',
     ];
 
     /**
@@ -53,6 +54,14 @@ class User extends Authenticatable
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'name';
     }
 
     /**
