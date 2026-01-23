@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { PostCard } from '@/components/post-card';
 import type { PaginatedResponse, Post } from '@/types';
@@ -17,7 +17,7 @@ export function InfiniteScrollFeed({ initialData, fetchUrl, key }: InfiniteScrol
     const [isLoading, setIsLoading] = useState(false);
     const observerTarget = useRef<HTMLDivElement>(null);
 
-    const loadMore = async () => {
+    const loadMore = useCallback(async () => {
         if (isLoading || !hasMore) return;
 
         setIsLoading(true);
@@ -35,7 +35,7 @@ export function InfiniteScrollFeed({ initialData, fetchUrl, key }: InfiniteScrol
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [isLoading, hasMore, fetchUrl, currentPage]);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -57,7 +57,7 @@ export function InfiniteScrollFeed({ initialData, fetchUrl, key }: InfiniteScrol
                 observer.unobserve(currentTarget);
             }
         };
-    }, [hasMore, isLoading, currentPage]);
+    }, [hasMore, isLoading, loadMore]);
 
     // Reset when key changes (tab switch)
     useEffect(() => {
